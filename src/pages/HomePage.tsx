@@ -46,6 +46,7 @@ const HomePage = (props: Props) => {
   // Load 20 first products
   useEffect(() => {
     const getData = async () => {
+      setIndex(20);
       setIsLoading(true);
       try {
         const response = await Axios.get(`${Axios.defaults.baseURL}/products/search?q=${search}&limit=20&skip=0&select=title,price,thumbnail,rating`);
