@@ -3,6 +3,7 @@ import Search from '../components/Search'
 import Card from '../components/Card'
 import { ProductCard } from '../modal/Modal'
 import Axios from '../context/Axios'
+import Filter from '../components/Filter'
 
 interface Props {}
 
@@ -12,6 +13,9 @@ const HomePage = (props: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [index, setIndex] = useState<number>(20);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
 
   // function to get Data when scroll
   const fetchData = useCallback(async () => {
@@ -41,7 +45,6 @@ const HomePage = (props: Props) => {
 
   // Load 20 first products
   useEffect(() => {
-    console.log(search)
     const getData = async () => {
       setIsLoading(true);
       try {
@@ -82,19 +85,33 @@ const HomePage = (props: Props) => {
     };
   }, [fetchData, isLoading, scrollTimeout]);
 
-  //just check data items
+  // Get Category List
   useEffect(()=>{
-    console.log(items)
-  },[items])
+    const getCategories = async () => {
+      setIsLoading(true);
+      try {
+        const response = await Axios.get(`${Axios.defaults.baseURL}/products/category-list`);
+        setCategories(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getCategories();
+  },[]);
 
   return (
     <div className='h-screen'>
         <div className='my-20 content-center'>
-          <div className='flex items-center justify-start mb-5 mx-12'>
+          <div className='flex items-center justify-center md:justify-end mb-5 mx-12'>
             <Search value={search} setValue={setSearch}/>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4'>
+          <Filter 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}/>
+          <div className='ml-0 md:ml-32 lg:ml-64 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4'>
             {
               items?.map((product:ProductCard)=>{
                 return(
