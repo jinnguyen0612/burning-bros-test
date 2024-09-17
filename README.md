@@ -36,3 +36,5 @@ This project aims to implement an infinite scrolling feature combined with a sea
     npm install
 - Then run with:
     npm start
+
+ # Deloy: https://burning-bros-test.vercel.app/
